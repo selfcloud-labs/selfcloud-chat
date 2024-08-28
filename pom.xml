@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>pl.selfcloud</groupId>
+    <artifactId>selfcloud-parent</artifactId>
+    <version>1.0.6</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>pl.selfcloud.chat</groupId>
+  <artifactId>selfcloud-chat</artifactId>
+  <version>1.0.0</version>
+
+  <name>selfcloud-chat</name>
+  <description>selfcloud-chat-backend</description>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>selfcloud-chat-application</module>
+    <module>selfcloud-chat-api</module>
+    <module>selfcloud-chat-web</module>
+    <module>selfcloud-chat-domain</module>
+    <module>selfcloud-chat-infrastructure</module>
+  </modules>
+
+  <dependencies>
+
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>pl.selfcloud.security.api</groupId>
+        <artifactId>selfcloud-security-api</artifactId>
+        <version>1.0.6</version>
+      </dependency>
+<!--      <dependency>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-starter-security</artifactId>-->
+<!--      </dependency>-->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-websocket</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-messaging</artifactId>
+        <version>6.3.2</version>
+      </dependency>
+<!--      <dependency>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-starter-security</artifactId>-->
+<!--        <version>3.2.4</version>-->
+<!--      </dependency>-->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-websocket</artifactId>
+        <version>3.3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-api</artifactId>
+        <version>0.12.6</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>0.12.6</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId>
+        <version>0.12.6</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-webflux</artifactId>
+        <version>3.3.3</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>

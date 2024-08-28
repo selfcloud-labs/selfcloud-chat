@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello chat!!!</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div>
+    <label>Token:</label>
+    <input id="token" type="text"/><br>
+
+    <label>To user:</label>
+    <input id="toUser" type="text"/><br>
+
+    <button onclick="connect()">Create conversation</button>
+    <p id="conversation"></p>
+
+    <label>Your message:</label>
+    <input id="messageToSend" type="text"/><br>
+
+    <button onclick="sendMessage()">Send</button>
+    <p id="reponse"></p>
+</div>
+<script src="js.js"></script>
+<script src="stomp.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>pl.selfcloud.chat</groupId>
+    <artifactId>selfcloud-chat</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <groupId>pl.selfcloud.chat.infrastructure</groupId>
+  <artifactId>selfcloud-chat-infrastructure</artifactId>
+  <packaging>jar</packaging>
+
+  <name>selfcloud-chat-infrastructure</name>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>pl.selfcloud.chat.api</groupId>
+      <artifactId>selfcloud-chat-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>pl.selfcloud.chat.domain</groupId>
+      <artifactId>selfcloud-chat-domain</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>pl.selfcloud.security.api</groupId>
+      <artifactId>selfcloud-security-api</artifactId>
+      <version>1.0.6</version>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.boot</groupId>-->
+<!--      <artifactId>spring-boot-starter-security</artifactId>-->
+<!--      <version>3.2.4</version>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-messaging</artifactId>
+      <version>6.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+      <version>3.3.2</version>
+    </dependency>
+  </dependencies>
+</project>

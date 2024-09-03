@@ -17,7 +17,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -25,11 +24,8 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.server.RequestUpgradeStrategy;
 import org.springframework.web.socket.server.standard.TomcatRequestUpgradeStrategy;
-import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
-import pl.selfcloud.chat.infrastructure.filter.WebSocketTokenFilter;
 import pl.selfcloud.security.api.response.ConnValidationResponse;
 import pl.selfcloud.security.api.util.JwtUtil;
-import pl.selfcloud.security.api.util.SecurityConstants;
 
 @Configuration
 @EnableWebSocketMessageBroker

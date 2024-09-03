@@ -3,9 +3,8 @@ var color;
 var conversationId = null
 
 
-function showMessage(value, fromUser, userColor) {
+function showMessage(value, fromUser) {
     var newResponse = document.createElement('p');
-    newResponse.style.color = userColor;
     newResponse.appendChild(document.createTextNode(fromUser));
     newResponse.appendChild(document.createTextNode(": "));
     newResponse.appendChild(document.createTextNode(value));
@@ -17,6 +16,8 @@ function connect() {
     client = Stomp.client('ws://localhost:8095/chat');
     toUser = document.getElementById('toUser').value;
     token = document.getElementById('token').value;
+    object = document.getElementById('object').value;
+    objectId = document.getElementById('objectId').value;
 
     client.connect(
       { Authorization: `Bearer ${token}` }, // Nagłówek Authorization
@@ -31,12 +32,12 @@ function connect() {
             client.subscribe(`/topic/${conversationId}/messages`, function(message){
                 const msg = JSON.parse(message.body);
                 console.log("Test 1:" + msg)
-                showMessage(msg.content, msg.fromUserName, msg.userColor);
+                showMessage(msg.content, msg.fromUserName);
             });
         });
 
         // Wysyła żądanie o rozpoczęcie sesji i uzyskanie ID konwersacji
-        client.send("/app/start", {}, JSON.stringify({'toUser': toUser}));
+        client.send("/app/start", {}, JSON.stringify({'toUser': toUser, 'id': objectId, 'topic': object}));
     });
 }
 
@@ -49,6 +50,6 @@ function sendMessage() {
         return;
     }
 
-    client.send("/app/chat", {}, JSON.stringify({'value': messageToSend, 'toUserName': toUserName, 'convId': conversationId}) );
+    client.send("/app/chat", {}, JSON.stringify({'content': messageToSend, 'toUserName': toUserName, 'convId': conversationId}) );
 }
 

@@ -2,21 +2,19 @@ package pl.selfcloud.chat.domain.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import pl.selfcloud.chat.api.model.ChatParticipants;
+import pl.selfcloud.chat.api.model.conversation.ConversationComponentsDto;
+import pl.selfcloud.chat.api.model.message.ChatMessageToReceiveDto;
 import pl.selfcloud.chat.domain.model.ChatMessage;
-import pl.selfcloud.chat.domain.model.ConversationEntity;
-import pl.selfcloud.chat.domain.model.UUIDGenerator;
+import pl.selfcloud.chat.domain.model.component.ConversationComponents;
+import pl.selfcloud.chat.domain.model.Conversation;
+import pl.selfcloud.chat.domain.model.exception.CustomerNotFoundException;
+import pl.selfcloud.chat.domain.model.uuid.UUIDGenerator;
+import pl.selfcloud.chat.domain.model.mapper.ConversationComponentsMapper;
+import pl.selfcloud.chat.domain.repository.ChatMessageRepository;
 import pl.selfcloud.chat.domain.repository.ConversationRepository;
 import pl.selfcloud.customer.api.dto.CustomerDto;
 import reactor.core.publisher.Mono;
@@ -25,51 +23,61 @@ import reactor.core.publisher.Mono;
 public class ChatService {
 
   private final ConversationRepository conversationRepository;
-  private final Set<UUID> uuids = new HashSet<>();
+  private final ChatMessageRepository chatMessageRepository;
 
   private final WebClient webClient;
   private static final String CUSTOMER_SERVICE_URL = "http://localhost:8093/api/v1/customers";
 
-  public ChatService(ConversationRepository conversationRepository, WebClient.Builder webClientBuilder) {
+  public ChatService(ConversationRepository conversationRepository,
+      ChatMessageRepository chatMessageRepository, WebClient.Builder webClientBuilder) {
     this.conversationRepository = conversationRepository;
+    this.chatMessageRepository = chatMessageRepository;
     this.webClient = webClientBuilder.build();
   }
 
-  public ConversationEntity saveMessage(ChatMessage message, String fromUserName){
+  public ChatMessage saveMessage(ChatMessageToReceiveDto message, String fromUserName){
 
-    ConversationEntity entity = ConversationEntity.builder()
-        .content(message.getValue())
+    return chatMessageRepository.save(ChatMessage.builder()
         .convId(message.getConvId().toString())
-        .toUserName(message.getToUserName())
         .fromUserName(fromUserName)
+        .content(message.getContent())
         .time(LocalDateTime.now())
-        .deliveryStatus("seen")
-        .build();
-
-    conversationRepository.save(entity);
-    return entity;
+        .deliveryStatus(pl.selfcloud.chat.api.model.message.ChatMessageStatus.SEEN)
+        .build()
+    );
   }
 
-  public UUID getOrCreateConversation(final ChatParticipants participants)
+  public UUID getOrCreateConversation(final ConversationComponentsDto componentsDto, final String fromUser)
       throws NoSuchAlgorithmException {
 
+    ConversationComponents components =
+        ConversationComponentsMapper.mapToConversationComponents(componentsDto, fromUser);
+
     List<CustomerDto> customerDtos = getAllCustomers().block();
-    UUID uuid = UUIDGenerator.generateUUID(participants.getFromUser(), participants.getToUser());
+    if (customerDtos.stream()
+        .anyMatch(customer -> customer.getEmail().equals(components.getToUser()))) {
 
-    for (CustomerDto customerDto : customerDtos){
-      if (customerDto.getEmail().equals(participants.getToUser())){
-
-        if (uuids.contains(uuid)) return uuid;
-        else uuids.add(uuid);
-
+      UUID uuid = UUIDGenerator.generateUUID(components);
+      if (conversationRepository.existsByConvId(uuid.toString())){
+        return uuid;
+      }else{
+        conversationRepository.save(
+            Conversation.builder()
+                .convId(uuid.toString())
+                .fromUserName(components.getFromUser())
+                .toUserName(components.getToUser())
+                .status(pl.selfcloud.chat.api.model.conversation.ConversationStatus.OPEN)
+                .build()
+        );
         return uuid;
       }
+    } else {
+      throw new CustomerNotFoundException(components.getToUser());
+
     }
 
-
-    throw new RuntimeException("Brak usera mordo");
-
   }
+
 
   private Mono<List<CustomerDto>> getAllCustomers() {
 

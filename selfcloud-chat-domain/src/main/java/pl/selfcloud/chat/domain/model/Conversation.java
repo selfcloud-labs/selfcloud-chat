@@ -1,33 +1,34 @@
 package pl.selfcloud.chat.domain.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import pl.selfcloud.chat.api.model.message.ChatMessageStatus;
-
+import pl.selfcloud.chat.api.model.conversation.ConversationStatus;
 
 @Entity
-@Table(name = "messages")
+@Table(name = "conversations")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class ChatMessage {
+public class Conversation {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,22 +40,15 @@ public class ChatMessage {
   @Column(name = "from_user_name")
   private String fromUserName;
 
-  @Column(name = "content")
-  private String content;
+  @Column(name = "to_user_name")
+  private String toUserName;
 
-  @Column(name = "time")
-  @CreatedDate
-  private LocalDateTime time;
+  @OneToMany(mappedBy = "convId")
+  @Column(name = "conv_id")
+  private List<ChatMessage> messages;
 
-  @Column(name = "last_modified")
-  @LastModifiedDate
-  private LocalDateTime lastModified;
+  @Column(name = "status")
+  @Enumerated(EnumType.STRING)
+  private ConversationStatus status;
 
-  @Column(name = "delivery_status")
-  @Enumerated
-  private ChatMessageStatus deliveryStatus;
-
-  @ManyToOne
-  @JoinColumn(name = "conv_id", insertable = false, updatable = false)
-  private Conversation conversation;
 }

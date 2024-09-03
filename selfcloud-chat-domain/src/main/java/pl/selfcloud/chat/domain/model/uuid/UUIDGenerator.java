@@ -1,4 +1,4 @@
-package pl.selfcloud.chat.domain.model;
+package pl.selfcloud.chat.domain.model.uuid;
 
 import jakarta.annotation.PostConstruct;
 import java.security.MessageDigest;
@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import pl.selfcloud.chat.domain.model.component.ConversationComponents;
 
 @Component
 public class UUIDGenerator {
@@ -20,13 +21,13 @@ public class UUIDGenerator {
   public void init() {
     staticSalt = salt;
   }
-  public static UUID generateUUID(String str1, String str2) throws NoSuchAlgorithmException {
+  public static UUID generateUUID(final ConversationComponents components) throws NoSuchAlgorithmException {
     // Sortuj stringi, aby zapewnić deterministyczny wynik
-    String[] strings = {str1, str2};
+    String[] strings = {components.getFromUser(), components.getToUser()};
     Arrays.sort(strings);
 
     // Połącz stringi
-    String combined = strings[0] + strings[1] + staticSalt;
+    String combined = strings[0] + strings[1] + staticSalt + components.getTopic() + components.getId();
 
     // Generuj hash z połączonego stringa
     MessageDigest md = MessageDigest.getInstance("SHA-1");

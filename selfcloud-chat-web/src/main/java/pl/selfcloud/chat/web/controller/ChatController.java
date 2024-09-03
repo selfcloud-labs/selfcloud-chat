@@ -11,10 +11,9 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
-import pl.selfcloud.chat.api.model.ChatParticipants;
+import pl.selfcloud.chat.api.model.conversation.ConversationComponentsDto;
+import pl.selfcloud.chat.api.model.message.ChatMessageToReceiveDto;
 import pl.selfcloud.chat.domain.model.ChatMessage;
-import pl.selfcloud.chat.domain.model.ConversationEntity;
-import pl.selfcloud.chat.domain.model.UUIDDeserializer;
 import pl.selfcloud.chat.domain.service.ChatService;
 
 
@@ -27,25 +26,23 @@ public class ChatController {
   private final SimpMessagingTemplate messagingTemplate;
 
   @MessageMapping("/chat")
-  public void get(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+  public void get(@Payload ChatMessageToReceiveDto chatMessage, SimpMessageHeaderAccessor headerAccessor) {
 
     Principal userPrincipal = headerAccessor.getUser();
-    ConversationEntity entity = chatService.saveMessage(chatMessage, userPrincipal.getName());
+    ChatMessage chatMessageEntity = chatService.saveMessage(chatMessage, userPrincipal.getName());
 
     // Dynamiczne wysłanie wiadomości do określonego celu na podstawie convId
     String destination = String.format("/topic/%s/messages", chatMessage.getConvId());
-    messagingTemplate.convertAndSend(destination, entity);
+    messagingTemplate.convertAndSend(destination, chatMessageEntity);
   }
 
 
   @MessageMapping("/start")
   @SendToUser("/topic/init")
-  public UUID initializeConversation(@Payload ChatParticipants participants, SimpMessageHeaderAccessor headerAccessor)
+  public UUID initializeConversation(@Payload ConversationComponentsDto componentsDto, SimpMessageHeaderAccessor headerAccessor)
       throws NoSuchAlgorithmException {
 
-    Principal userPrincipal = headerAccessor.getUser();
-    participants.setFromUser(userPrincipal.getName());
-    UUID uuid = chatService.getOrCreateConversation(participants);
+    UUID uuid = chatService.getOrCreateConversation(componentsDto, headerAccessor.getUser().getName());
 
     return uuid;
   }

@@ -1,4 +1,4 @@
-package pl.selfcloud.chat.api.model;
+package pl.selfcloud.chat.api.model.message;
 
 public enum ChatMessageStatus {
 

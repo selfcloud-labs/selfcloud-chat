@@ -12,10 +12,11 @@ selfcloud-security:
     expiration-time: 3600000
 logging:
   level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
     org.springframework.security: debug
     org.springframework.web.socket: debug
     org.springframework.orm.jpa: INFO
-    org.hibernate.SQL: DEBUG
     io.eventuate: DEBUG
     io.eventuate.tram: DEBUG
 

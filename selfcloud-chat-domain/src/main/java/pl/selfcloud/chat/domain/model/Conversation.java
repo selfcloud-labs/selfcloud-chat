@@ -43,7 +43,13 @@ public class Conversation {
   @Column(name = "to_user_name")
   private String toUserName;
 
-  @OneToMany(mappedBy = "convId")
+  @OneToMany(targetEntity = ChatMessage.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinTable(
+      name = "announcements_images",
+      joinColumns = @JoinColumn(
+          name = "announcement_id", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(
+          name = "image_id", referencedColumnName = "id"))
   @Column(name = "conv_id")
   private List<ChatMessage> messages;
 
